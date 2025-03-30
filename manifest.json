@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "MQTT IoT Controller",
+    "version": "1.0",
+    "description": "Control IoT devices via MQTT from Chrome.",
+    "permissions": ["storage"],
+    "host_permissions": ["*://*/"],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "service_worker": "background.js"
+    }
+  }
+  
