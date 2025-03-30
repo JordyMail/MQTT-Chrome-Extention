@@ -33,6 +33,15 @@
         }
         .btn {
             border-radius: 8px;
+            font-size: 14px;
+            padding: 6px 12px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 5px;
+        }
+        .btn-row button {
+            flex: 1;
         }
     </style>
 </head>
@@ -68,8 +77,10 @@
     <div class="mb-2">
         <input type="text" id="topic" class="form-control" placeholder="Topic">
     </div>
-    <button id="on" class="btn btn-success w-100">ON</button>
-    <button id="off" class="btn btn-danger w-100 mt-2">OFF</button>
+    <div class="btn-row">
+        <button id="on" class="btn btn-success">ON</button>
+        <button id="off" class="btn btn-danger">OFF</button>
+    </div>
     <button id="subscribe" class="btn btn-warning w-100 mt-2">Subscribe</button>
     <hr>
     <h3 class="mt-3">Received Messages:</h3>
