@@ -18,7 +18,13 @@ chrome.runtime.onMessage.addListener((request) => {
     if (request.action === "messageReceived") {
         let msgList = document.getElementById("messages");
         let listItem = document.createElement("li");
+        listItem.className = "list-group-item";
         listItem.textContent = `Topic: ${request.topic}, Message: ${request.message}`;
         msgList.appendChild(listItem);
+    }
+    if (request.action === "statusUpdate") {
+        let statusEl = document.getElementById("status");
+        statusEl.textContent = request.status;
+        statusEl.className = request.status === "Connected" ? "text-success" : "text-danger";
     }
 });

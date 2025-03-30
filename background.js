@@ -5,7 +5,14 @@ let client;
 chrome.runtime.onMessage.addListener((request) => {
     if (request.action === "connect") {
         client = mqtt.connect(request.broker);
-        client.on("connect", () => console.log("Connected to MQTT broker"));
+        client.on("connect", () => {
+            console.log("Connected to MQTT broker");
+            chrome.runtime.sendMessage({ action: "statusUpdate", status: "Connected" });
+        });
+        client.on("disconnect", () => {
+            console.log("Disconnected from MQTT broker");
+            chrome.runtime.sendMessage({ action: "statusUpdate", status: "Disconnected" });
+        });
     }
     if (request.action === "publish" && client) {
         client.publish(request.topic, request.message);
