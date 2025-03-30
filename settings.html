@@ -6,10 +6,26 @@
     <script src="settings.js" defer></script>
     <style>
         body {
-            width: 320px;
+            width: 350px;
             padding: 20px;
             border-radius: 10px;
-            transition: background-color 0.3s, color 0.3s;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .form-control, .btn {
+            border-radius: 8px;
+        }
+        .btn {
+            width: 100%;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -32,6 +48,6 @@
     <input type="text" id="defaultTopic" class="form-control">
     <label for="autoReconnect">Auto-Reconnect:</label>
     <input type="checkbox" id="autoReconnect">
-    <button id="saveSettings" class="btn btn-secondary btn-sm mt-2">Save</button>
+    <button id="saveSettings" class="btn btn-primary">Save</button>
 </body>
 </html>
