@@ -1,54 +1,71 @@
-document.getElementById("saveSettings").addEventListener("click", function() {
-    let bgColor = document.getElementById("bgColor").value;
-    let textColor = bgColor === "black" ? "white" : "black";
-    let autoClear = document.getElementById("autoClear").checked;
-    let defaultTopic = document.getElementById("defaultTopic").value;
-    let autoReconnect = document.getElementById("autoReconnect").checked;
+document.addEventListener("DOMContentLoaded", function () {
+    const status = document.getElementById("status");
+    const brokerInput = document.getElementById("broker");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const topicInput = document.getElementById("topic");
+    const connectButton = document.getElementById("connect");
+    const onButton = document.getElementById("on");
+    const offButton = document.getElementById("off");
+    const subscribeButton = document.getElementById("subscribe");
+    const messagesList = document.getElementById("messages");
     
-    document.body.style.backgroundColor = bgColor;
-    document.body.style.color = textColor;
-    chrome.storage.local.set({ bgColor, autoClear, defaultTopic, autoReconnect });
-});
+    let client = null;
 
-chrome.storage.local.get(["bgColor", "autoClear", "defaultTopic", "autoReconnect"], function(data) {
-    if (data.bgColor) {
-        document.body.style.backgroundColor = data.bgColor;
-        document.body.style.color = data.bgColor === "black" ? "white" : "black";
-        document.getElementById("bgColor").value = data.bgColor;
-    }
-    if (data.autoClear !== undefined) {
-        document.getElementById("autoClear").checked = data.autoClear;
-    }
-    if (data.defaultTopic) {
-        document.getElementById("topic").value = data.defaultTopic;
-        document.getElementById("defaultTopic").value = data.defaultTopic;
-    }
-    if (data.autoReconnect !== undefined) {
-        document.getElementById("autoReconnect").checked = data.autoReconnect;
-    }
-});
+    // Load settings
+    chrome.storage.local.get(["bgColor", "defaultTopic"], function(data) {
+        if (data.bgColor) {
+            document.body.style.backgroundColor = data.bgColor;
+            document.body.style.color = data.bgColor === "black" ? "white" : "black";
+        }
+        if (data.defaultTopic) {
+            topicInput.value = data.defaultTopic;
+        }
+    });
 
-document.getElementById("settingsButton").addEventListener("click", function() {
-    document.getElementById("settingsPanel").classList.toggle("hidden");
-});
+    connectButton.addEventListener("click", function () {
+        if (client && client.isConnected()) {
+            client.end();
+            status.textContent = "Disconnected";
+            status.classList.add("text-danger");
+            status.classList.remove("text-success");
+            return;
+        }
 
-chrome.runtime.onMessage.addListener((request) => {
-    if (request.action === "messageReceived") {
-        let msgList = document.getElementById("messages");
-        let listItem = document.createElement("li");
-        listItem.className = "list-group-item";
-        listItem.textContent = `Topic: ${request.topic}, Message: ${request.message}`;
-        msgList.appendChild(listItem);
-        
-        chrome.storage.local.get(["autoClear"], function(data) {
-            if (data.autoClear) {
-                setTimeout(() => { msgList.innerHTML = ""; }, 5000);
-            }
+        client = mqtt.connect(brokerInput.value, {
+            username: usernameInput.value,
+            password: passwordInput.value
         });
-    }
-    if (request.action === "statusUpdate") {
-        let statusEl = document.getElementById("status");
-        statusEl.textContent = request.status;
-        statusEl.className = request.status === "Connected" ? "text-success" : "text-danger";
-    }
+
+        client.on("connect", function () {
+            status.textContent = "Connected";
+            status.classList.add("text-success");
+            status.classList.remove("text-danger");
+        });
+
+        client.on("message", function (topic, message) {
+            let li = document.createElement("li");
+            li.textContent = `(${topic}) ${message.toString()}`;
+            li.classList.add("list-group-item");
+            messagesList.appendChild(li);
+        });
+    });
+
+    subscribeButton.addEventListener("click", function () {
+        if (client && client.isConnected() && topicInput.value) {
+            client.subscribe(topicInput.value);
+        }
+    });
+
+    onButton.addEventListener("click", function () {
+        if (client && client.isConnected() && topicInput.value) {
+            client.publish(topicInput.value, "ON");
+        }
+    });
+
+    offButton.addEventListener("click", function () {
+        if (client && client.isConnected() && topicInput.value) {
+            client.publish(topicInput.value, "OFF");
+        }
+    });
 });
