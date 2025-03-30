@@ -14,25 +14,20 @@ document.getElementById("connect").addEventListener("click", function() {
     saveSettings();
 });
 
-document.getElementById("publish").addEventListener("click", function() {
+document.getElementById("on").addEventListener("click", function() {
     let topic = document.getElementById("topic").value;
-    let message = document.getElementById("message").value;
-    chrome.runtime.sendMessage({ action: "publish", topic, message });
-    saveSettings();
+    chrome.runtime.sendMessage({ action: "publish", topic, message: "ON" });
+});
+
+document.getElementById("off").addEventListener("click", function() {
+    let topic = document.getElementById("topic").value;
+    chrome.runtime.sendMessage({ action: "publish", topic, message: "OFF" });
 });
 
 document.getElementById("subscribe").addEventListener("click", function() {
     let topic = document.getElementById("topic").value;
     chrome.runtime.sendMessage({ action: "subscribe", topic });
     saveSettings();
-});
-
-document.getElementById("lightOn").addEventListener("click", function() {
-    chrome.runtime.sendMessage({ action: "publish", topic: "home/light", message: "ON" });
-});
-
-document.getElementById("lightOff").addEventListener("click", function() {
-    chrome.runtime.sendMessage({ action: "publish", topic: "home/light", message: "OFF" });
 });
 
 chrome.runtime.onMessage.addListener((request) => {
