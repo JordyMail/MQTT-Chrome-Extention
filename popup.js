@@ -1,16 +1,19 @@
 document.getElementById("saveSettings").addEventListener("click", function() {
     let bgColor = document.getElementById("bgColor").value;
+    let textColor = bgColor === "black" ? "white" : "black";
     let autoClear = document.getElementById("autoClear").checked;
     let defaultTopic = document.getElementById("defaultTopic").value;
     let autoReconnect = document.getElementById("autoReconnect").checked;
     
     document.body.style.backgroundColor = bgColor;
+    document.body.style.color = textColor;
     chrome.storage.local.set({ bgColor, autoClear, defaultTopic, autoReconnect });
 });
 
 chrome.storage.local.get(["bgColor", "autoClear", "defaultTopic", "autoReconnect"], function(data) {
     if (data.bgColor) {
         document.body.style.backgroundColor = data.bgColor;
+        document.body.style.color = data.bgColor === "black" ? "white" : "black";
         document.getElementById("bgColor").value = data.bgColor;
     }
     if (data.autoClear !== undefined) {
