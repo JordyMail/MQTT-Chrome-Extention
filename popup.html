@@ -30,7 +30,16 @@
     <span class="settings" id="settingsButton">Settings</span>
     <div id="settingsPanel" class="hidden">
         <label for="bgColor">Background Color:</label>
-        <input type="color" id="bgColor">
+        <select id="bgColor" class="form-control">
+            <option value="white">Light Mode</option>
+            <option value="black">Dark Mode</option>
+        </select>
+        <label for="autoClear">Auto-Clear Messages:</label>
+        <input type="checkbox" id="autoClear">
+        <label for="defaultTopic">Default Topic:</label>
+        <input type="text" id="defaultTopic" class="form-control">
+        <label for="autoReconnect">Auto-Reconnect:</label>
+        <input type="checkbox" id="autoReconnect">
         <button id="saveSettings" class="btn btn-secondary btn-sm">Save</button>
     </div>
     <h2 class="text-center">MQTT IoT Controller</h2>

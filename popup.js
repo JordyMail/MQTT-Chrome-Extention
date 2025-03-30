@@ -1,50 +1,32 @@
-function saveSettings() {
-    let broker = document.getElementById("broker").value;
-    let topic = document.getElementById("topic").value;
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-    chrome.storage.local.set({ broker, topic, username, password });
-}
-
-document.getElementById("connect").addEventListener("click", function() {
-    let broker = document.getElementById("broker").value;
-    let username = document.getElementById("username").value;
-    let password = document.getElementById("password").value;
-    chrome.runtime.sendMessage({ action: "connect", broker, username, password });
-    saveSettings();
-});
-
-document.getElementById("on").addEventListener("click", function() {
-    let topic = document.getElementById("topic").value;
-    chrome.runtime.sendMessage({ action: "publish", topic, message: "ON" });
-});
-
-document.getElementById("off").addEventListener("click", function() {
-    let topic = document.getElementById("topic").value;
-    chrome.runtime.sendMessage({ action: "publish", topic, message: "OFF" });
-});
-
-document.getElementById("subscribe").addEventListener("click", function() {
-    let topic = document.getElementById("topic").value;
-    chrome.runtime.sendMessage({ action: "subscribe", topic });
-    saveSettings();
-});
-
-document.getElementById("settingsButton").addEventListener("click", function() {
-    document.getElementById("settingsPanel").classList.toggle("hidden");
-});
-
 document.getElementById("saveSettings").addEventListener("click", function() {
     let bgColor = document.getElementById("bgColor").value;
+    let autoClear = document.getElementById("autoClear").checked;
+    let defaultTopic = document.getElementById("defaultTopic").value;
+    let autoReconnect = document.getElementById("autoReconnect").checked;
+    
     document.body.style.backgroundColor = bgColor;
-    chrome.storage.local.set({ bgColor });
+    chrome.storage.local.set({ bgColor, autoClear, defaultTopic, autoReconnect });
 });
 
-chrome.storage.local.get(["bgColor"], function(data) {
+chrome.storage.local.get(["bgColor", "autoClear", "defaultTopic", "autoReconnect"], function(data) {
     if (data.bgColor) {
         document.body.style.backgroundColor = data.bgColor;
         document.getElementById("bgColor").value = data.bgColor;
     }
+    if (data.autoClear !== undefined) {
+        document.getElementById("autoClear").checked = data.autoClear;
+    }
+    if (data.defaultTopic) {
+        document.getElementById("topic").value = data.defaultTopic;
+        document.getElementById("defaultTopic").value = data.defaultTopic;
+    }
+    if (data.autoReconnect !== undefined) {
+        document.getElementById("autoReconnect").checked = data.autoReconnect;
+    }
+});
+
+document.getElementById("settingsButton").addEventListener("click", function() {
+    document.getElementById("settingsPanel").classList.toggle("hidden");
 });
 
 chrome.runtime.onMessage.addListener((request) => {
@@ -54,6 +36,12 @@ chrome.runtime.onMessage.addListener((request) => {
         listItem.className = "list-group-item";
         listItem.textContent = `Topic: ${request.topic}, Message: ${request.message}`;
         msgList.appendChild(listItem);
+        
+        chrome.storage.local.get(["autoClear"], function(data) {
+            if (data.autoClear) {
+                setTimeout(() => { msgList.innerHTML = ""; }, 5000);
+            }
+        });
     }
     if (request.action === "statusUpdate") {
         let statusEl = document.getElementById("status");
