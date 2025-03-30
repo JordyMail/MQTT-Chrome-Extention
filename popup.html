@@ -12,9 +12,27 @@
         #status {
             font-weight: bold;
         }
+        .settings {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <span class="settings" id="settingsButton">Settings</span>
+    <div id="settingsPanel" class="hidden">
+        <label for="bgColor">Background Color:</label>
+        <input type="color" id="bgColor">
+        <button id="saveSettings" class="btn btn-secondary btn-sm">Save</button>
+    </div>
     <h2 class="text-center">MQTT IoT Controller</h2>
     <p id="status" class="text-center text-danger">Disconnected</p>
     <div class="mb-2">

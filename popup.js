@@ -30,6 +30,23 @@ document.getElementById("subscribe").addEventListener("click", function() {
     saveSettings();
 });
 
+document.getElementById("settingsButton").addEventListener("click", function() {
+    document.getElementById("settingsPanel").classList.toggle("hidden");
+});
+
+document.getElementById("saveSettings").addEventListener("click", function() {
+    let bgColor = document.getElementById("bgColor").value;
+    document.body.style.backgroundColor = bgColor;
+    chrome.storage.local.set({ bgColor });
+});
+
+chrome.storage.local.get(["bgColor"], function(data) {
+    if (data.bgColor) {
+        document.body.style.backgroundColor = data.bgColor;
+        document.getElementById("bgColor").value = data.bgColor;
+    }
+});
+
 chrome.runtime.onMessage.addListener((request) => {
     if (request.action === "messageReceived") {
         let msgList = document.getElementById("messages");
