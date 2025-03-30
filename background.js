@@ -4,7 +4,10 @@ let client;
 
 chrome.runtime.onMessage.addListener((request) => {
     if (request.action === "connect") {
-        client = mqtt.connect(request.broker);
+        client = mqtt.connect(request.broker, {
+            username: request.username,
+            password: request.password
+        });
         client.on("connect", () => {
             console.log("Connected to MQTT broker");
             chrome.runtime.sendMessage({ action: "statusUpdate", status: "Connected" });
@@ -26,6 +29,6 @@ chrome.runtime.onMessage.addListener((request) => {
 
 if (client) {
     client.on("message", (topic, message) => {
-        chrome.runtime.sendMessage({ action: "messageReceived", topic: topic, message: message.toString() });
+        chrome.runtime.sendMessage({ action: "messageReceived", topic, message: message.toString() });
     });
 }
