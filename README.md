@@ -1,7 +1,8 @@
 # MQTT Chrome Extension
 
 ## Overview
-This Chrome extension allows users to control IoT devices using MQTT directly from their browser. Users can connect to an MQTT broker, send messages, subscribe to topics, and customize their settings for a better experience.
+This Chrome extension allows users to control IoT devices using MQTT directly from their browser. Users can connect to an MQTT broker, send messages, subscribe to topics, and customize their settings for a better experience. </br>
+<strong> NOTE: I developed this extension because similar solutions are only available for Mac users, while there is no support yet for the Windows platform. </strong>
 
 ## Features
 - Connect to an MQTT broker with authentication.
